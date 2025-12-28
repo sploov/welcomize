@@ -1,89 +1,114 @@
+<div align="center">
+
 # 🃏 Welcomize
 
-> A powerful, lightweight, and customizable Discord welcome card generator powered by @napi-rs/canvas.
+**Create stunning, customizable welcome images for your Discord communities in milliseconds.**
 
-![License](https://img.shields.io/npm/l/welcomize)
-![Version](https://img.shields.io/npm/v/welcomize)
-![Downloads](https://img.shields.io/npm/dt/welcomize)
+[![npm version](https://img.shields.io/npm/v/welcomize?style=flat-square&color=5865F2)](https://www.npmjs.com/package/welcomize)
+[![Downloads](https://img.shields.io/npm/dt/welcomize?style=flat-square&color=blue)](https://www.npmjs.com/package/welcomize)
+[![License](https://img.shields.io/npm/l/welcomize?style=flat-square&color=green)](https://github.com/sploov/welcomize/blob/main/LICENSE)
+[![Prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square)](https://github.com/prettier/prettier)
 
-**Welcomize** makes it incredibly easy to generate beautiful welcome images for your Discord bot. It comes with built-in themes and customization options, built with performance in mind.
+<br />
+
+<img src="./assets/modern.png" width="800" alt="Welcomize Modern Theme Preview" />
+
+<br />
+
+[**Installation**](#-installation) •
+[**Quick Start**](#-quick-start) •
+[**Themes**](#-themes) •
+[**API Reference**](#-api-reference) •
+[**Contributing**](#-contributing)
+
+</div>
+
+---
 
 ## ✨ Features
 
-*   **3 Built-in Themes:** Classic, Modern, and Clean.
-*   **High Performance:** Built on top of `@napi-rs/canvas` (Rust-based).
-*   **Fully Typed:** Written in TypeScript with complete type definitions.
-*   **Easy Customization:** Change colors, texts, and backgrounds effortlessly.
+- **🚀 High Performance:** Powered by `@napi-rs/canvas` for blazing fast image generation.
+- **🎨 Pre-built Themes:** Comes with `Classic`, `Modern`, and `Clean` themes out of the box.
+- **🛠 Fully Customizable:** Control colors, fonts, backgrounds, and layouts.
+- **📘 TypeScript:** Written in TypeScript with full type definitions included.
+- **📦 Lightweight:** Zero heavy dependencies (uses pre-compiled binaries).
+
+---
 
 ## 📦 Installation
 
+Install `welcomize` using your favorite package manager:
+
 ```bash
+# npm
 npm install welcomize
-# or
+
+# yarn
 yarn add welcomize
-# or
+
+# pnpm
 pnpm add welcomize
 ```
 
+---
+
 ## 🚀 Quick Start
 
-Here is a simple example of how to generate a "Classic" welcome card.
+Generate your first welcome card in just a few lines of code.
 
 ```typescript
 import { Welcomize } from 'welcomize';
-import { AttachmentBuilder } from 'discord.js'; // Example for Discord.js
+import { AttachmentBuilder } from 'discord.js';
 
-// Inside your command or event listener
+// 1. Create the card
 const card = new Welcomize({
     username: 'SploovDev',
-    avatarUrl: user.displayAvatarURL({ extension: 'png' }),
-    theme: 'classic',
+    avatarUrl: 'https://github.com/sploov.png',
+    theme: 'modern',
     title: 'Welcome!',
-    subtitle: 'Thanks for joining our server.'
+    subtitle: 'To the Sploov Community',
+    borderColor: '#5865F2'
 });
 
+// 2. Render to buffer
 const buffer = await card.render();
-const attachment = new AttachmentBuilder(buffer, { name: 'welcome.png' });
 
+// 3. Send to Discord
+const attachment = new AttachmentBuilder(buffer, { name: 'welcome.png' });
 channel.send({ files: [attachment] });
 ```
 
-## 🎨 Themes & Examples
+---
 
-### Classic
-The default look. Solid background, circular avatar.
+## 🎨 Themes
 
-```typescript
-new Welcomize({
-    username: 'User',
-    avatarUrl: '...',
-    theme: 'classic'
-})
-```
+Welcomize comes with beautiful built-in themes.
 
-### Modern
-Gradient background, centered layout, sleek look.
+### 🔹 Modern
+A sleek, gradient-based design with a glowing avatar.
+<img src="./assets/modern.png" width="100%" style="border-radius: 10px; margin-bottom: 20px;" alt="Modern Theme" />
 
 ```typescript
-new Welcomize({
-    username: 'User',
-    avatarUrl: '...',
-    theme: 'modern',
-    borderColor: '#00FFFF' // Glow color
-})
+new Welcomize({ theme: 'modern', borderColor: '#00FFFF', ... });
 ```
 
-### Clean
-Minimalist white/light theme with a rounded square avatar.
+### 🔹 Clean
+Minimalist, bright, and professional.
+<img src="./assets/clean.png" width="100%" style="border-radius: 10px; margin-bottom: 20px;" alt="Clean Theme" />
 
 ```typescript
-new Welcomize({
-    username: 'User',
-    avatarUrl: '...',
-    theme: 'clean',
-    borderColor: '#FF5733' // Accent color
-})
+new Welcomize({ theme: 'clean', borderColor: '#FF5733', ... });
 ```
+
+### 🔹 Classic
+The timeless solid-color Discord style.
+<img src="./assets/classic.png" width="100%" style="border-radius: 10px; margin-bottom: 20px;" alt="Classic Theme" />
+
+```typescript
+new Welcomize({ theme: 'classic', backgroundColor: '#23272A', ... });
+```
+
+---
 
 ## ⚙️ API Reference
 
@@ -92,30 +117,33 @@ new Welcomize({
 | Option | Type | Default | Description |
 | :--- | :--- | :--- | :--- |
 | `username` | `string` | **Required** | The username to display. |
-| `avatarUrl` | `string` | **Required** | URL of the user's avatar (png/jpg). |
-| `theme` | `'classic' \| 'modern' \| 'clean'` | `'classic'` | The design template to use. |
-| `title` | `string` | `'Welcome'` | Main title text. |
-| `subtitle` | `string` | `'To the server!'` | Secondary text. |
-| `backgroundColor` | `string` | (Theme dependent) | Hex color or usage dependent. |
-| `textColor` | `string` | `'#FFFFFF'` | Color of the text. |
-| `borderColor` | `string` | (Theme dependent) | Border, glow, or accent color. |
+| `avatarUrl` | `string` | **Required** | The user's avatar URL (png/jpg). |
+| `theme` | `Theme` | `'classic'` | `'classic'`, `'modern'`, or `'clean'`. |
+| `title` | `string` | `'Welcome'` | Main heading text. |
+| `subtitle` | `string` | `'To the server!'` | Subtitle/message text. |
+| `backgroundColor` | `string` | *Theme Default* | Hex color background. |
+| `textColor` | `string` | `'#FFFFFF'` | Hex color for text. |
+| `borderColor` | `string` | *Theme Default* | Accent/Border color. |
+| `fontPath` | `string` | `undefined` | Custom font file path. |
 
-## 🛠️ Development
+---
 
-```bash
-# Clone the repo
-git clone https://github.com/sploov/welcomize.git
+## 🤝 Contributing
 
-# Install dependencies
-npm install
+We love contributions! Please read our [Contributing Guide](CONTRIBUTING.md) to get started.
 
-# Run example generator
-npx ts-node examples/generate.ts
+1. Fork the repo.
+2. Create your feature branch.
+3. Commit your changes.
+4. Push to the branch.
+5. Open a Pull Request.
 
-# Build
-npm run build
-```
+---
 
-## 📄 License
+<div align="center">
 
-MIT © Sploov
+Made with ❤️ by the **Sploov** Team
+
+[GitHub](https://github.com/sploov) • [Issues](https://github.com/sploov/welcomize/issues)
+
+</div>
