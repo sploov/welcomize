@@ -85,7 +85,11 @@ export class Welcomize {
         if (background) {
             ctx.drawImage(background, 0, 0, this.width, this.height);
         } else {
-            ctx.fillStyle = this.options.backgroundColor!;
+            // Radial Gradient for depth instead of flat color
+            const gradient = ctx.createRadialGradient(this.width / 2, this.height / 2, 0, this.width / 2, this.height / 2, this.width);
+            gradient.addColorStop(0, this.options.backgroundColor!);
+            gradient.addColorStop(1, '#000000'); // darken edges
+            ctx.fillStyle = gradient;
             ctx.fillRect(0, 0, this.width, this.height);
         }
 
@@ -114,7 +118,10 @@ export class Welcomize {
         
         // Welcome
         ctx.font = `bold 60px "${fontFamily}"`;
+        ctx.shadowColor = 'rgba(0,0,0,0.5)';
+        ctx.shadowBlur = 4;
         ctx.fillText(this.options.title!, 300, 130);
+        ctx.shadowBlur = 0;
 
         // Username
         ctx.font = `40px "${fontFamily}"`;
@@ -130,32 +137,56 @@ export class Welcomize {
         // Background
         if (background) {
             ctx.drawImage(background, 0, 0, this.width, this.height);
-            // Add a slight dark overlay to ensure text readability
+            // Add a slight dark overlay
             ctx.fillStyle = 'rgba(0, 0, 0, 0.4)';
             ctx.fillRect(0, 0, this.width, this.height);
         } else {
-            // Gradient Background
+            // Complex Gradient Background
             const gradient = ctx.createLinearGradient(0, 0, this.width, this.height);
-            gradient.addColorStop(0, '#0F2027');
-            gradient.addColorStop(0.5, '#203A43');
-            gradient.addColorStop(1, '#2C5364');
+            gradient.addColorStop(0, '#1cb5e0');
+            gradient.addColorStop(1, '#000046');
             ctx.fillStyle = gradient;
             ctx.fillRect(0, 0, this.width, this.height);
 
-            // Decoration
+            // Abstract Shapes (Soft Overlay)
+            ctx.globalCompositeOperation = 'overlay';
             ctx.fillStyle = 'rgba(255, 255, 255, 0.1)';
             ctx.beginPath();
-            ctx.arc(this.width, 0, 300, 0, Math.PI * 2);
+            ctx.arc(0, 0, 400, 0, Math.PI * 2);
             ctx.fill();
             ctx.beginPath();
-            ctx.arc(0, this.height, 200, 0, Math.PI * 2);
+            ctx.arc(this.width, this.height, 300, 0, Math.PI * 2);
             ctx.fill();
+            ctx.globalCompositeOperation = 'source-over';
         }
 
+        // Glassmorphism Card
+        const cardWidth = this.width - 100;
+        const cardHeight = this.height - 60;
+        const cardX = 50;
+        const cardY = 30;
+
+        ctx.save();
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.1)';
+        ctx.shadowColor = 'rgba(0, 0, 0, 0.2)';
+        ctx.shadowBlur = 20;
+        ctx.shadowOffsetY = 10;
+        
+        // Draw rounded rect manually for glass box
+        ctx.beginPath();
+        ctx.roundRect(cardX, cardY, cardWidth, cardHeight, 20);
+        ctx.fill();
+        
+        // Glass border
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.2)';
+        ctx.lineWidth = 1;
+        ctx.stroke();
+        ctx.restore();
+
         // Avatar (Centered)
-        const avatarRadius = 90;
+        const avatarRadius = 80;
         const avatarX = this.width / 2;
-        const avatarY = 110;
+        const avatarY = 100;
 
         // Glow
         ctx.shadowColor = this.options.borderColor!;
@@ -169,11 +200,13 @@ export class Welcomize {
         ctx.textAlign = 'center';
 
         ctx.font = `bold 50px "${fontFamily}"`;
-        ctx.fillText(`Welcome, ${this.options.username}`, this.width / 2, 240);
+        ctx.shadowColor = 'rgba(0,0,0,0.3)';
+        ctx.shadowBlur = 10;
+        ctx.fillText(`Welcome, ${this.options.username}`, this.width / 2, 230);
 
         ctx.font = `25px "${fontFamily}"`;
-        ctx.fillStyle = '#AAAAAA';
-        ctx.fillText(this.options.subtitle!, this.width / 2, 275);
+        ctx.fillStyle = '#EEEEEE';
+        ctx.fillText(this.options.subtitle!, this.width / 2, 265);
     }
 
     private drawClean(ctx: SKRSContext2D, avatar: any, fontFamily: string, background?: any) {
@@ -223,23 +256,32 @@ export class Welcomize {
         if (background) {
             ctx.drawImage(background, 0, 0, this.width, this.height);
         } else {
-            ctx.fillStyle = '#0b0d17';
+            ctx.fillStyle = '#05070a'; // Darker background
             ctx.fillRect(0, 0, this.width, this.height);
             
-            // Grid lines
-            ctx.strokeStyle = 'rgba(0, 255, 255, 0.1)';
-            ctx.lineWidth = 2;
-            for (let i = 0; i < this.width; i += 40) {
+            // Grid lines (Perspective)
+            ctx.strokeStyle = 'rgba(0, 255, 255, 0.15)';
+            ctx.lineWidth = 1;
+            
+            // Vertical lines
+            for (let i = 0; i < this.width; i += 50) {
                 ctx.beginPath();
                 ctx.moveTo(i, 0);
                 ctx.lineTo(i, this.height);
                 ctx.stroke();
             }
-            for (let i = 0; i < this.height; i += 40) {
+            // Horizontal lines
+            for (let i = 0; i < this.height; i += 50) {
                 ctx.beginPath();
                 ctx.moveTo(0, i);
                 ctx.lineTo(this.width, i);
                 ctx.stroke();
+            }
+
+            // Scanlines
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.3)';
+            for (let i = 0; i < this.height; i += 4) {
+                ctx.fillRect(0, i, this.width, 2);
             }
         }
 
@@ -251,12 +293,15 @@ export class Welcomize {
         const avatarX = 60;
         const avatarY = (this.height - avatarSize) / 2;
 
+        ctx.shadowColor = neonColor;
+        ctx.shadowBlur = 15;
         ctx.strokeStyle = secondaryNeon;
-        ctx.lineWidth = 5;
-        ctx.strokeRect(avatarX - 5, avatarY - 5, avatarSize, avatarSize);
+        ctx.lineWidth = 4;
+        ctx.strokeRect(avatarX - 4, avatarY - 4, avatarSize, avatarSize);
         
         ctx.strokeStyle = neonColor;
-        ctx.strokeRect(avatarX + 5, avatarY + 5, avatarSize, avatarSize);
+        ctx.strokeRect(avatarX + 4, avatarY + 4, avatarSize, avatarSize);
+        ctx.shadowBlur = 0;
 
         ctx.drawImage(avatar, avatarX, avatarY, avatarSize, avatarSize);
 
@@ -268,15 +313,20 @@ export class Welcomize {
         // Glitch 1
         ctx.fillStyle = secondaryNeon;
         ctx.font = `bold 60px "${fontFamily}"`;
-        ctx.fillText(this.options.title!, titleX - 2, titleY);
+        ctx.globalAlpha = 0.7;
+        ctx.fillText(this.options.title!, titleX - 3, titleY);
 
         // Glitch 2
         ctx.fillStyle = neonColor;
-        ctx.fillText(this.options.title!, titleX + 2, titleY);
+        ctx.fillText(this.options.title!, titleX + 3, titleY);
+        ctx.globalAlpha = 1.0;
 
         // Main Text
         ctx.fillStyle = '#FFFFFF';
+        ctx.shadowColor = secondaryNeon;
+        ctx.shadowBlur = 5;
         ctx.fillText(this.options.title!, titleX, titleY);
+        ctx.shadowBlur = 0;
 
         // Username
         ctx.font = `40px "${fontFamily}"`;
