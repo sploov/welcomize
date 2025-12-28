@@ -1,0 +1,171 @@
+import { createCanvas, loadImage, GlobalFonts, SKRSContext2D } from '@napi-rs/canvas';
+import { WelCardOptions } from './types';
+import { drawCircularImage, drawRoundedImage } from './utils';
+
+export class WelCard {
+    private options: WelCardOptions;
+    private width: number = 800;
+    private height: number = 300;
+
+    constructor(options: WelCardOptions) {
+        this.options = {
+            theme: 'classic',
+            title: 'Welcome',
+            subtitle: 'To the server!',
+            backgroundColor: '#23272A',
+            textColor: '#FFFFFF',
+            borderColor: '#7289DA',
+            ...options
+        };
+    }
+
+    public async render(): Promise<Buffer> {
+        const canvas = createCanvas(this.width, this.height);
+        const ctx = canvas.getContext('2d');
+
+        // Load Avatar
+        let avatar;
+        try {
+            avatar = await loadImage(this.options.avatarUrl);
+        } catch (e) {
+            throw new Error('Failed to load avatar image.');
+        }
+
+        switch (this.options.theme) {
+            case 'modern':
+                this.drawModern(ctx, avatar);
+                break;
+            case 'clean':
+                this.drawClean(ctx, avatar);
+                break;
+            case 'classic':
+            default:
+                this.drawClassic(ctx, avatar);
+                break;
+        }
+
+        return canvas.toBuffer('image/png');
+    }
+
+    private drawClassic(ctx: SKRSContext2D, avatar: any) {
+        // Background
+        ctx.fillStyle = this.options.backgroundColor!;
+        ctx.fillRect(0, 0, this.width, this.height);
+
+        // Border
+        ctx.strokeStyle = this.options.borderColor!;
+        ctx.lineWidth = 15;
+        ctx.strokeRect(0, 0, this.width, this.height);
+
+        // Avatar
+        const avatarRadius = 100;
+        const avatarX = 150;
+        const avatarY = this.height / 2;
+        
+        ctx.save();
+        ctx.beginPath();
+        ctx.arc(avatarX, avatarY, avatarRadius + 5, 0, Math.PI * 2);
+        ctx.fillStyle = this.options.borderColor!;
+        ctx.fill();
+        ctx.restore();
+
+        drawCircularImage(ctx, avatar, avatarX, avatarY, avatarRadius);
+
+        // Text
+        ctx.fillStyle = this.options.textColor!;
+        ctx.textAlign = 'left';
+        
+        // Welcome
+        ctx.font = 'bold 60px sans-serif';
+        ctx.fillText(this.options.title!, 300, 130);
+
+        // Username
+        ctx.font = '40px sans-serif';
+        ctx.fillText(this.options.username, 300, 190);
+
+        // Subtitle
+        ctx.fillStyle = '#CCCCCC';
+        ctx.font = '25px sans-serif';
+        ctx.fillText(this.options.subtitle!, 300, 230);
+    }
+
+    private drawModern(ctx: SKRSContext2D, avatar: any) {
+        // Gradient Background
+        const gradient = ctx.createLinearGradient(0, 0, this.width, this.height);
+        gradient.addColorStop(0, '#0F2027');
+        gradient.addColorStop(0.5, '#203A43');
+        gradient.addColorStop(1, '#2C5364');
+        ctx.fillStyle = gradient;
+        ctx.fillRect(0, 0, this.width, this.height);
+
+        // Decoration
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.1)';
+        ctx.beginPath();
+        ctx.arc(this.width, 0, 300, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.beginPath();
+        ctx.arc(0, this.height, 200, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Avatar (Centered)
+        const avatarRadius = 90;
+        const avatarX = this.width / 2;
+        const avatarY = 110;
+
+        // Glow
+        ctx.shadowColor = this.options.borderColor!;
+        ctx.shadowBlur = 25;
+        
+        drawCircularImage(ctx, avatar, avatarX, avatarY, avatarRadius);
+        ctx.shadowBlur = 0; // Reset shadow
+
+        // Text
+        ctx.fillStyle = this.options.textColor!;
+        ctx.textAlign = 'center';
+
+        ctx.font = 'bold 50px sans-serif';
+        ctx.fillText(`Welcome, ${this.options.username}`, this.width / 2, 240);
+
+        ctx.font = '25px sans-serif';
+        ctx.fillStyle = '#AAAAAA';
+        ctx.fillText(this.options.subtitle!, this.width / 2, 275);
+    }
+
+    private drawClean(ctx: SKRSContext2D, avatar: any) {
+        // Background (Light usually, or custom)
+        const bgColor = this.options.backgroundColor === '#23272A' ? '#FFFFFF' : this.options.backgroundColor!;
+        const textColor = this.options.textColor === '#FFFFFF' ? '#333333' : this.options.textColor!;
+        
+        ctx.fillStyle = bgColor;
+        ctx.fillRect(0, 0, this.width, this.height);
+
+        // Accent Bar
+        ctx.fillStyle = this.options.borderColor!;
+        ctx.fillRect(0, 0, 20, this.height);
+
+        // Avatar (Rounded Rect)
+        const avatarSize = 200;
+        const avatarX = 60;
+        const avatarY = (this.height - avatarSize) / 2;
+        
+        // Shadow for avatar
+        ctx.shadowColor = 'rgba(0,0,0,0.3)';
+        ctx.shadowBlur = 10;
+        ctx.shadowOffsetX = 5;
+        ctx.shadowOffsetY = 5;
+
+        drawRoundedImage(ctx, avatar, avatarX, avatarY, avatarSize, avatarSize, 20);
+        ctx.shadowColor = 'transparent';
+
+        // Text
+        ctx.fillStyle = textColor;
+        ctx.textAlign = 'left';
+
+        ctx.font = 'bold 70px sans-serif';
+        ctx.fillText('WELCOME', 300, 140);
+
+        ctx.fillStyle = this.options.borderColor!;
+        ctx.font = '40px sans-serif';
+        ctx.fillText(this.options.username, 300, 200);
+    }
+}
