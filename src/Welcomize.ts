@@ -214,16 +214,22 @@ export class Welcomize {
         if (background) {
              ctx.drawImage(background, 0, 0, this.width, this.height);
         } else {
-            const bgColor = this.options.backgroundColor === '#23272A' ? '#FFFFFF' : this.options.backgroundColor!;
+            const bgColor = this.options.backgroundColor === '#23272A' ? '#FAFAFA' : this.options.backgroundColor!;
             ctx.fillStyle = bgColor;
             ctx.fillRect(0, 0, this.width, this.height);
+            
+            // Subtle Noise/Texture
+            ctx.fillStyle = 'rgba(0,0,0,0.02)';
+            for(let i=0; i<this.width; i+=4) {
+                 ctx.fillRect(i, 0, 1, this.height);
+            }
         }
 
         const textColor = this.options.textColor === '#FFFFFF' ? '#333333' : this.options.textColor!;
 
         // Accent Bar
         ctx.fillStyle = this.options.borderColor!;
-        ctx.fillRect(0, 0, 20, this.height);
+        ctx.fillRect(0, 0, 15, this.height);
 
         // Avatar (Rounded Rect)
         const avatarSize = 200;
@@ -231,24 +237,29 @@ export class Welcomize {
         const avatarY = (this.height - avatarSize) / 2;
         
         // Shadow for avatar
-        ctx.shadowColor = 'rgba(0,0,0,0.3)';
-        ctx.shadowBlur = 10;
-        ctx.shadowOffsetX = 5;
-        ctx.shadowOffsetY = 5;
+        ctx.shadowColor = 'rgba(0,0,0,0.2)';
+        ctx.shadowBlur = 15;
+        ctx.shadowOffsetY = 8;
 
-        drawRoundedImage(ctx, avatar, avatarX, avatarY, avatarSize, avatarSize, 20);
+        drawRoundedImage(ctx, avatar, avatarX, avatarY, avatarSize, avatarSize, 30);
         ctx.shadowColor = 'transparent';
 
         // Text
         ctx.fillStyle = textColor;
         ctx.textAlign = 'left';
 
-        ctx.font = `bold 70px "${fontFamily}"`;
-        ctx.fillText('WELCOME', 300, 140);
+        // Welcome (Tracking/Letter Spacing simulation by drawing char by char or just using a wide font if avail,
+        // but standard canvas doesn't do tracking well. We'll stick to bold sans).
+        ctx.font = `900 70px "${fontFamily}"`;
+        ctx.fillText('WELCOME', 300, 130);
 
         ctx.fillStyle = this.options.borderColor!;
-        ctx.font = `40px "${fontFamily}"`;
-        ctx.fillText(this.options.username, 300, 200);
+        ctx.font = `500 40px "${fontFamily}"`;
+        ctx.fillText(this.options.username.toUpperCase(), 300, 190);
+        
+        ctx.fillStyle = '#888888';
+        ctx.font = `300 25px "${fontFamily}"`;
+        ctx.fillText(this.options.subtitle!, 300, 230);
     }
 
     private drawCyberpunk(ctx: SKRSContext2D, avatar: any, fontFamily: string, background?: any) {
@@ -343,20 +354,32 @@ export class Welcomize {
          if (background) {
             ctx.drawImage(background, 0, 0, this.width, this.height);
         } else {
-            // Soft Green Gradient
+            // Fresh Morning Gradient
             const gradient = ctx.createLinearGradient(0, 0, this.width, this.height);
-            gradient.addColorStop(0, '#56ab2f');
-            gradient.addColorStop(1, '#a8e063');
+            gradient.addColorStop(0, '#56ab2f'); // Green
+            gradient.addColorStop(1, '#a8e063'); // Light Green
             ctx.fillStyle = gradient;
             ctx.fillRect(0, 0, this.width, this.height);
 
-            // Leafy/Organic overlay (Circles)
-            ctx.fillStyle = 'rgba(255, 255, 255, 0.2)';
+            // Bokeh / Sunspots
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.1)';
+            for(let i=0; i<10; i++) {
+                ctx.beginPath();
+                ctx.arc(
+                    Math.random() * this.width, 
+                    Math.random() * this.height, 
+                    Math.random() * 50 + 20, 
+                    0, Math.PI * 2
+                );
+                ctx.fill();
+            }
+            
+            // Big organic curves
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.15)';
             ctx.beginPath();
-            ctx.arc(this.width - 50, 50, 100, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.beginPath();
-            ctx.arc(this.width - 150, this.height + 50, 120, 0, Math.PI * 2);
+            ctx.moveTo(0, this.height);
+            ctx.bezierCurveTo(this.width / 3, this.height - 100, this.width / 1.5, this.height, this.width, this.height - 50);
+            ctx.lineTo(this.width, this.height);
             ctx.fill();
         }
 
@@ -367,12 +390,19 @@ export class Welcomize {
         const avatarX = 150;
         const avatarY = this.height / 2;
         
-        // Organic border
+        // Organic leaf-like border
         ctx.strokeStyle = borderColor;
-        ctx.lineWidth = 8;
+        ctx.lineWidth = 6;
         ctx.beginPath();
-        ctx.arc(avatarX, avatarY, avatarRadius + 8, 0, Math.PI * 2);
+        ctx.arc(avatarX, avatarY, avatarRadius + 6, 0, Math.PI * 2);
         ctx.stroke();
+
+        // Dotted outer ring
+        ctx.setLineDash([10, 15]);
+        ctx.beginPath();
+        ctx.arc(avatarX, avatarY, avatarRadius + 15, 0, Math.PI * 2);
+        ctx.stroke();
+        ctx.setLineDash([]);
 
         drawCircularImage(ctx, avatar, avatarX, avatarY, avatarRadius);
 
@@ -380,17 +410,20 @@ export class Welcomize {
         ctx.textAlign = 'left';
         ctx.fillStyle = '#FFFFFF';
         
+        // Title
         ctx.font = `bold 60px "${fontFamily}"`;
-        ctx.shadowColor = 'rgba(0,0,0,0.2)';
-        ctx.shadowBlur = 5;
+        ctx.shadowColor = 'rgba(0,0,0,0.3)';
+        ctx.shadowBlur = 4;
         ctx.fillText(this.options.title!, 300, 130);
         ctx.shadowBlur = 0;
 
+        // Username
         ctx.font = `40px "${fontFamily}"`;
         ctx.fillText(this.options.username, 300, 190);
 
+        // Subtitle
         ctx.font = `italic 25px "${fontFamily}"`;
-        ctx.fillStyle = '#F0F0F0';
+        ctx.fillStyle = '#F1F8E9';
         ctx.fillText(this.options.subtitle!, 300, 230);
     }
 
@@ -398,23 +431,56 @@ export class Welcomize {
         if (background) {
             ctx.drawImage(background, 0, 0, this.width, this.height);
         } else {
-            // Dark Grey/Black
-            ctx.fillStyle = '#1a1a1a';
+            // Dark Tech Background
+            ctx.fillStyle = '#0f0c29';
             ctx.fillRect(0, 0, this.width, this.height);
             
-            // Angled Shapes
-            ctx.fillStyle = '#2a2a2a';
+            // Hexagon Pattern Overlay
+            ctx.strokeStyle = '#302b63';
+            ctx.lineWidth = 1;
+            const r = 30;
+            const w = r * Math.sqrt(3);
+            const h = r * 1.5; // distance between rows
+            
+            for(let y = 0; y < this.height + 50; y += h) {
+                 for(let x = 0; x < this.width + 50; x += w) {
+                      const xOffset = (Math.floor(y / h) % 2) * (w / 2);
+                      ctx.beginPath();
+                      // Simple hex approximation or just circles for speed? let's do circles for "dots" tech look
+                      // Actually hex is cooler but complicated to draw quickly without helper.
+                      // Let's do a Grid with crosshairs
+                 }
+            }
+
+            // Tech Crosshair Grid
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.05)';
+            for(let x=0; x<this.width; x+=40) {
+                 for(let y=0; y<this.height; y+=40) {
+                     if (Math.random() > 0.8) ctx.fillRect(x, y, 2, 2);
+                 }
+            }
+            
+            // Angled Sidebar
+            ctx.fillStyle = '#24243e';
             ctx.beginPath();
             ctx.moveTo(this.width, 0);
-            ctx.lineTo(this.width - 300, 0);
-            ctx.lineTo(this.width, 300);
+            ctx.lineTo(this.width - 350, 0);
+            ctx.lineTo(this.width - 200, this.height);
+            ctx.lineTo(this.width, this.height);
             ctx.fill();
         }
 
-        const accentColor = this.options.borderColor === '#7289DA' ? '#ff0044' : this.options.borderColor!;
+        const accentColor = this.options.borderColor === '#7289DA' ? '#00b4db' : this.options.borderColor!; // Blue-ish default for Gaming
 
-        // Avatar (Hexagon-ish - actually just square with thick borders for now or clipped)
-        // Let's do a diamond shape clip for "gaming" feel
+        // HUD Elements
+        ctx.strokeStyle = accentColor;
+        ctx.lineWidth = 2;
+        // Top Left Bracket
+        ctx.beginPath(); ctx.moveTo(20, 50); ctx.lineTo(20, 20); ctx.lineTo(50, 20); ctx.stroke();
+        // Bottom Right Bracket
+        ctx.beginPath(); ctx.moveTo(this.width-50, this.height-20); ctx.lineTo(this.width-20, this.height-20); ctx.lineTo(this.width-20, this.height-50); ctx.stroke();
+
+        // Avatar (Diamond Shape Clip)
         const avatarSize = 180;
         const cx = 150;
         const cy = this.height / 2;
@@ -426,70 +492,115 @@ export class Welcomize {
         ctx.lineTo(cx, cy + 100);
         ctx.lineTo(cx - 100, cy);
         ctx.closePath();
-        ctx.lineWidth = 8;
+        
+        ctx.lineWidth = 6;
         ctx.strokeStyle = accentColor;
         ctx.stroke();
+        ctx.fillStyle = accentColor; // Fill behind just in case
+        ctx.fill();
+        
         ctx.clip();
         ctx.drawImage(avatar, cx - 100, cy - 100, 200, 200);
         ctx.restore();
 
         // Text
         ctx.textAlign = 'left';
-        ctx.fillStyle = '#FFFFFF';
         
-        ctx.font = `bold italic 60px "${fontFamily}"`;
+        // Title (Gamer font style)
+        ctx.font = `italic bold 60px "${fontFamily}"`;
+        ctx.fillStyle = '#FFFFFF';
+        ctx.shadowColor = accentColor;
+        ctx.shadowBlur = 10;
         ctx.fillText(this.options.title!.toUpperCase(), 300, 130);
+        ctx.shadowBlur = 0;
 
-        // Underline
+        // Progress Bar
+        ctx.fillStyle = '#444';
+        ctx.fillRect(300, 145, 300, 6);
         ctx.fillStyle = accentColor;
-        ctx.fillRect(300, 140, 200, 5);
+        ctx.fillRect(300, 145, 200, 6); // 66% loaded
+        ctx.shadowColor = accentColor;
+        ctx.shadowBlur = 5;
+        ctx.fillRect(300, 145, 200, 6); // Double draw for glow
+        ctx.shadowBlur = 0;
 
         ctx.fillStyle = '#FFFFFF';
         ctx.font = `40px "${fontFamily}"`;
         ctx.fillText(this.options.username, 300, 200);
 
-        ctx.fillStyle = '#888888';
+        ctx.fillStyle = '#AAAAAA';
         ctx.font = `20px "${fontFamily}"`;
-        ctx.fillText(`Lvl 1 • ${this.options.subtitle}`, 300, 235);
+        ctx.fillText(`PLAYER 1 • ${this.options.subtitle}`, 300, 235);
     }
 
     private drawRetro(ctx: SKRSContext2D, avatar: any, fontFamily: string, background?: any) {
         if (background) {
             ctx.drawImage(background, 0, 0, this.width, this.height);
         } else {
-            // Synthwave Gradient
+            // Retro Gradient
             const gradient = ctx.createLinearGradient(0, 0, 0, this.height);
             gradient.addColorStop(0, '#2b1055');
-            gradient.addColorStop(1, '#7597de');
+            gradient.addColorStop(0.5, '#7597de');
+            gradient.addColorStop(0.5, '#2b1055'); // Horizon line
+            gradient.addColorStop(1, '#000000');
             ctx.fillStyle = gradient;
             ctx.fillRect(0, 0, this.width, this.height);
 
-            // Sun
+            // Sun with Glow
+            const sunX = this.width / 2;
+            const sunY = this.height / 2;
+            
+            // Glow
+            const glow = ctx.createRadialGradient(sunX, sunY, 50, sunX, sunY, 200);
+            glow.addColorStop(0, 'rgba(255, 200, 0, 0.4)');
+            glow.addColorStop(1, 'rgba(255, 0, 80, 0)');
+            ctx.fillStyle = glow;
+            ctx.fillRect(0, 0, this.width, this.height);
+
+            // Sun body
             const sunGradient = ctx.createLinearGradient(0, 0, 0, this.height);
             sunGradient.addColorStop(0, '#ffd700');
             sunGradient.addColorStop(1, '#ff0055');
             ctx.fillStyle = sunGradient;
             ctx.beginPath();
-            ctx.arc(this.width / 2, this.height, 150, Math.PI, 0);
+            ctx.arc(sunX, this.height, 200, Math.PI, 0); // Bigger sun
             ctx.fill();
 
+            // Sun Stripes
+            ctx.fillStyle = '#2b1055'; // Match background/darkness
+            for(let y = this.height - 180; y < this.height; y += 15) {
+                 const thickness = (y - (this.height - 180)) / 10 + 2;
+                 ctx.fillRect(sunX - 200, y, 400, thickness);
+            }
+
             // Grid
-            ctx.strokeStyle = 'rgba(255, 0, 255, 0.3)';
+            ctx.strokeStyle = '#ff00de';
             ctx.lineWidth = 2;
-            // Horizontal lines (perspective)
-            for(let y = this.height / 2; y < this.height; y += 20) {
-                 ctx.beginPath();
-                 ctx.moveTo(0, y);
-                 ctx.lineTo(this.width, y);
-                 ctx.stroke();
-            }
-            // Vertical lines (perspective fan)
+            ctx.shadowColor = '#ff00de';
+            ctx.shadowBlur = 10;
+            
+            // Perspective Grid (Bottom Half)
+            ctx.save();
+            ctx.beginPath();
+            // Vertical fan
             for(let x = -this.width; x < this.width * 2; x += 100) {
-                ctx.beginPath();
-                ctx.moveTo(this.width / 2, this.height / 2);
+                ctx.moveTo(this.width / 2, this.height / 2); // Horizon
                 ctx.lineTo(x, this.height);
-                ctx.stroke();
             }
+            // Horizontal lines getting closer to horizon
+            let y = this.height;
+            let d = 40; // Start spacing
+            while(y > this.height / 2 + 10) { // Stop before hitting exact center to avoid clutter
+                ctx.beginPath();
+                ctx.moveTo(0, y);
+                ctx.lineTo(this.width, y);
+                ctx.stroke();
+                y -= d;
+                d *= 0.7; // Tighter perspective
+                if (d < 3) break; // Prevent infinite loop
+            }
+            ctx.restore();
+            ctx.shadowBlur = 0;
         }
         
         // Avatar
@@ -506,59 +617,84 @@ export class Welcomize {
         ctx.textAlign = 'left';
         
         // Title (Outlined 80s style)
-        ctx.font = `bold 60px "${fontFamily}"`;
+        ctx.font = `italic 900 60px "${fontFamily}"`; // Extra bold italic
         ctx.strokeStyle = '#00ffff';
         ctx.lineWidth = 3;
         ctx.strokeText(this.options.title!, 250, 130);
-        ctx.fillStyle = '#ff00de';
+        
+        const textGradient = ctx.createLinearGradient(0, 80, 0, 130);
+        textGradient.addColorStop(0, '#ffff00');
+        textGradient.addColorStop(1, '#ff00de');
+        ctx.fillStyle = textGradient;
         ctx.fillText(this.options.title!, 250, 130);
 
         ctx.fillStyle = '#FFFFFF';
         ctx.font = `40px "${fontFamily}"`;
+        ctx.shadowColor = '#ff00de';
+        ctx.shadowBlur = 5;
         ctx.fillText(this.options.username, 250, 190);
+        ctx.shadowBlur = 0;
 
         ctx.fillStyle = '#00ffff';
         ctx.font = `25px "${fontFamily}"`;
-        ctx.fillText(this.options.subtitle!, 250, 230);
+        ctx.fillText(this.options.subtitle!.toUpperCase(), 250, 230);
     }
 
     private drawBubble(ctx: SKRSContext2D, avatar: any, fontFamily: string, background?: any) {
         if (background) {
             ctx.drawImage(background, 0, 0, this.width, this.height);
         } else {
-            // Pastel Blue
-            ctx.fillStyle = '#E0F7FA';
+            // Pastel Gradient
+            const gradient = ctx.createLinearGradient(0, 0, this.width, this.height);
+            gradient.addColorStop(0, '#e0c3fc');
+            gradient.addColorStop(1, '#8ec5fc');
+            ctx.fillStyle = gradient;
             ctx.fillRect(0, 0, this.width, this.height);
             
-            // Bubbles (Circles)
-            ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
-            ctx.beginPath(); ctx.arc(50, 50, 80, 0, Math.PI*2); ctx.fill();
-            ctx.beginPath(); ctx.arc(this.width - 50, this.height - 50, 100, 0, Math.PI*2); ctx.fill();
-            ctx.beginPath(); ctx.arc(this.width / 2, 0, 60, 0, Math.PI*2); ctx.fill();
-            
-            ctx.fillStyle = '#B2EBF2';
-             ctx.beginPath(); ctx.arc(200, 250, 40, 0, Math.PI*2); ctx.fill();
+            // Bubbles (Circles with gradient for 3D effect)
+            const drawBubble = (x: number, y: number, r: number) => {
+                const bg = ctx.createRadialGradient(x - r/3, y - r/3, r/5, x, y, r);
+                bg.addColorStop(0, 'rgba(255,255,255, 0.8)');
+                bg.addColorStop(1, 'rgba(255,255,255, 0.1)');
+                ctx.fillStyle = bg;
+                ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI*2); ctx.fill();
+            };
+
+            drawBubble(50, 50, 60);
+            drawBubble(this.width - 50, this.height - 50, 80);
+            drawBubble(this.width / 2, 20, 50);
+            drawBubble(200, 250, 30);
+            drawBubble(this.width - 150, 80, 40);
         }
 
-        const accentColor = this.options.borderColor === '#7289DA' ? '#4DD0E1' : this.options.borderColor!;
+        const accentColor = this.options.borderColor === '#7289DA' ? '#FFFFFF' : this.options.borderColor!;
 
-        // Avatar (White border)
-        const avatarRadius = 100;
+        // Avatar (White border with soft shadow)
+        const avatarRadius = 90;
         const avatarX = this.width / 2;
-        const avatarY = 120;
+        const avatarY = 110;
 
+        ctx.shadowColor = 'rgba(0,0,0,0.1)';
+        ctx.shadowBlur = 10;
         ctx.fillStyle = '#FFFFFF';
         ctx.beginPath();
         ctx.arc(avatarX, avatarY, avatarRadius + 10, 0, Math.PI * 2);
         ctx.fill();
+        ctx.shadowBlur = 0;
 
         drawCircularImage(ctx, avatar, avatarX, avatarY, avatarRadius);
 
         // Text
         ctx.textAlign = 'center';
-        ctx.fillStyle = '#006064'; // Dark Teal
+        ctx.fillStyle = '#FFFFFF';
         
         ctx.font = `bold 50px "${fontFamily}"`;
-        ctx.fillText(`Hi, ${this.options.username}!`, this.width / 2, 260);
+        ctx.shadowColor = 'rgba(0,0,0,0.1)';
+        ctx.shadowBlur = 2;
+        ctx.fillText(`Hi, ${this.options.username}!`, this.width / 2, 250);
+        
+        ctx.font = `25px "${fontFamily}"`;
+        ctx.fillStyle = '#F0F0F0';
+        ctx.fillText(this.options.subtitle!, this.width / 2, 280);
     }
 }
