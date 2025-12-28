@@ -23,34 +23,56 @@ export class Welcomize {
         const canvas = createCanvas(this.width, this.height);
         const ctx = canvas.getContext('2d');
 
-        // Load Avatar
+        // Register Custom Font
+        let fontFamily = 'sans-serif';
+        if (this.options.fontPath) {
+            const success = GlobalFonts.registerFromPath(this.options.fontPath, 'CustomFont');
+            if (success) {
+                fontFamily = 'CustomFont';
+            }
+        }
+
+        // Load Images
         let avatar;
+        let background;
         try {
-            avatar = await loadImage(this.options.avatarUrl);
+            const promises = [loadImage(this.options.avatarUrl)];
+            if (this.options.backgroundImageUrl) {
+                promises.push(loadImage(this.options.backgroundImageUrl));
+            }
+            const results = await Promise.all(promises);
+            avatar = results[0];
+            if (this.options.backgroundImageUrl) {
+                background = results[1];
+            }
         } catch (e) {
-            throw new Error('Failed to load avatar image.');
+            throw new Error('Failed to load images: ' + e);
         }
 
         switch (this.options.theme) {
             case 'modern':
-                this.drawModern(ctx, avatar);
+                this.drawModern(ctx, avatar, fontFamily, background);
                 break;
             case 'clean':
-                this.drawClean(ctx, avatar);
+                this.drawClean(ctx, avatar, fontFamily, background);
                 break;
             case 'classic':
             default:
-                this.drawClassic(ctx, avatar);
+                this.drawClassic(ctx, avatar, fontFamily, background);
                 break;
         }
 
         return canvas.toBuffer('image/png');
     }
 
-    private drawClassic(ctx: SKRSContext2D, avatar: any) {
+    private drawClassic(ctx: SKRSContext2D, avatar: any, fontFamily: string, background?: any) {
         // Background
-        ctx.fillStyle = this.options.backgroundColor!;
-        ctx.fillRect(0, 0, this.width, this.height);
+        if (background) {
+            ctx.drawImage(background, 0, 0, this.width, this.height);
+        } else {
+            ctx.fillStyle = this.options.backgroundColor!;
+            ctx.fillRect(0, 0, this.width, this.height);
+        }
 
         // Border
         ctx.strokeStyle = this.options.borderColor!;
@@ -76,36 +98,44 @@ export class Welcomize {
         ctx.textAlign = 'left';
         
         // Welcome
-        ctx.font = 'bold 60px sans-serif';
+        ctx.font = `bold 60px "${fontFamily}"`;
         ctx.fillText(this.options.title!, 300, 130);
 
         // Username
-        ctx.font = '40px sans-serif';
+        ctx.font = `40px "${fontFamily}"`;
         ctx.fillText(this.options.username, 300, 190);
 
         // Subtitle
         ctx.fillStyle = '#CCCCCC';
-        ctx.font = '25px sans-serif';
+        ctx.font = `25px "${fontFamily}"`;
         ctx.fillText(this.options.subtitle!, 300, 230);
     }
 
-    private drawModern(ctx: SKRSContext2D, avatar: any) {
-        // Gradient Background
-        const gradient = ctx.createLinearGradient(0, 0, this.width, this.height);
-        gradient.addColorStop(0, '#0F2027');
-        gradient.addColorStop(0.5, '#203A43');
-        gradient.addColorStop(1, '#2C5364');
-        ctx.fillStyle = gradient;
-        ctx.fillRect(0, 0, this.width, this.height);
+    private drawModern(ctx: SKRSContext2D, avatar: any, fontFamily: string, background?: any) {
+        // Background
+        if (background) {
+            ctx.drawImage(background, 0, 0, this.width, this.height);
+            // Add a slight dark overlay to ensure text readability
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.4)';
+            ctx.fillRect(0, 0, this.width, this.height);
+        } else {
+            // Gradient Background
+            const gradient = ctx.createLinearGradient(0, 0, this.width, this.height);
+            gradient.addColorStop(0, '#0F2027');
+            gradient.addColorStop(0.5, '#203A43');
+            gradient.addColorStop(1, '#2C5364');
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, this.width, this.height);
 
-        // Decoration
-        ctx.fillStyle = 'rgba(255, 255, 255, 0.1)';
-        ctx.beginPath();
-        ctx.arc(this.width, 0, 300, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.beginPath();
-        ctx.arc(0, this.height, 200, 0, Math.PI * 2);
-        ctx.fill();
+            // Decoration
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.1)';
+            ctx.beginPath();
+            ctx.arc(this.width, 0, 300, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.beginPath();
+            ctx.arc(0, this.height, 200, 0, Math.PI * 2);
+            ctx.fill();
+        }
 
         // Avatar (Centered)
         const avatarRadius = 90;
@@ -123,21 +153,25 @@ export class Welcomize {
         ctx.fillStyle = this.options.textColor!;
         ctx.textAlign = 'center';
 
-        ctx.font = 'bold 50px sans-serif';
+        ctx.font = `bold 50px "${fontFamily}"`;
         ctx.fillText(`Welcome, ${this.options.username}`, this.width / 2, 240);
 
-        ctx.font = '25px sans-serif';
+        ctx.font = `25px "${fontFamily}"`;
         ctx.fillStyle = '#AAAAAA';
         ctx.fillText(this.options.subtitle!, this.width / 2, 275);
     }
 
-    private drawClean(ctx: SKRSContext2D, avatar: any) {
-        // Background (Light usually, or custom)
-        const bgColor = this.options.backgroundColor === '#23272A' ? '#FFFFFF' : this.options.backgroundColor!;
+    private drawClean(ctx: SKRSContext2D, avatar: any, fontFamily: string, background?: any) {
+        // Background
+        if (background) {
+             ctx.drawImage(background, 0, 0, this.width, this.height);
+        } else {
+            const bgColor = this.options.backgroundColor === '#23272A' ? '#FFFFFF' : this.options.backgroundColor!;
+            ctx.fillStyle = bgColor;
+            ctx.fillRect(0, 0, this.width, this.height);
+        }
+
         const textColor = this.options.textColor === '#FFFFFF' ? '#333333' : this.options.textColor!;
-        
-        ctx.fillStyle = bgColor;
-        ctx.fillRect(0, 0, this.width, this.height);
 
         // Accent Bar
         ctx.fillStyle = this.options.borderColor!;
@@ -161,11 +195,11 @@ export class Welcomize {
         ctx.fillStyle = textColor;
         ctx.textAlign = 'left';
 
-        ctx.font = 'bold 70px sans-serif';
+        ctx.font = `bold 70px "${fontFamily}"`;
         ctx.fillText('WELCOME', 300, 140);
 
         ctx.fillStyle = this.options.borderColor!;
-        ctx.font = '40px sans-serif';
+        ctx.font = `40px "${fontFamily}"`;
         ctx.fillText(this.options.username, 300, 200);
     }
 }

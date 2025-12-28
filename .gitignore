@@ -2,3 +2,5 @@ node_modules/
 dist/
 examples/output/
 .DS_Store
+assets/*.ttf
+assets/*.jpg

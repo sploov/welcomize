@@ -124,7 +124,8 @@ new Welcomize({ theme: 'classic', backgroundColor: '#23272A', ... });
 | `backgroundColor` | `string` | *Theme Default* | Hex color background. |
 | `textColor` | `string` | `'#FFFFFF'` | Hex color for text. |
 | `borderColor` | `string` | *Theme Default* | Accent/Border color. |
-| `fontPath` | `string` | `undefined` | Custom font file path. |
+| `fontPath` | `string` | `undefined` | Local file path to a custom font (e.g., `./fonts/Roboto.ttf`). |
+| `backgroundImageUrl` | `string` | `undefined` | URL or path to a custom background image (overrides color/gradient). |
 
 ---
 

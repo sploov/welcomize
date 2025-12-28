@@ -10,4 +10,5 @@ export interface WelcomizeOptions {
     textColor?: string;
     borderColor?: string;
     fontPath?: string; // Optional path to load custom font
+    backgroundImageUrl?: string; // Optional path to load background image
 }
