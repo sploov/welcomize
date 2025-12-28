@@ -1,12 +1,12 @@
-# 🃏 WelCard
+# 🃏 Welcomize
 
 > A powerful, lightweight, and customizable Discord welcome card generator powered by @napi-rs/canvas.
 
-![License](https://img.shields.io/npm/l/welcard)
-![Version](https://img.shields.io/npm/v/welcard)
-![Downloads](https://img.shields.io/npm/dt/welcard)
+![License](https://img.shields.io/npm/l/welcomize)
+![Version](https://img.shields.io/npm/v/welcomize)
+![Downloads](https://img.shields.io/npm/dt/welcomize)
 
-**WelCard** makes it incredibly easy to generate beautiful welcome images for your Discord bot. It comes with built-in themes and customization options, built with performance in mind.
+**Welcomize** makes it incredibly easy to generate beautiful welcome images for your Discord bot. It comes with built-in themes and customization options, built with performance in mind.
 
 ## ✨ Features
 
@@ -18,11 +18,11 @@
 ## 📦 Installation
 
 ```bash
-npm install welcard
+npm install welcomize
 # or
-yarn add welcard
+yarn add welcomize
 # or
-pnpm add welcard
+pnpm add welcomize
 ```
 
 ## 🚀 Quick Start
@@ -30,11 +30,11 @@ pnpm add welcard
 Here is a simple example of how to generate a "Classic" welcome card.
 
 ```typescript
-import { WelCard } from 'welcard';
+import { Welcomize } from 'welcomize';
 import { AttachmentBuilder } from 'discord.js'; // Example for Discord.js
 
 // Inside your command or event listener
-const card = new WelCard({
+const card = new Welcomize({
     username: 'SploovDev',
     avatarUrl: user.displayAvatarURL({ extension: 'png' }),
     theme: 'classic',
@@ -54,7 +54,7 @@ channel.send({ files: [attachment] });
 The default look. Solid background, circular avatar.
 
 ```typescript
-new WelCard({
+new Welcomize({
     username: 'User',
     avatarUrl: '...',
     theme: 'classic'
@@ -65,7 +65,7 @@ new WelCard({
 Gradient background, centered layout, sleek look.
 
 ```typescript
-new WelCard({
+new Welcomize({
     username: 'User',
     avatarUrl: '...',
     theme: 'modern',
@@ -77,7 +77,7 @@ new WelCard({
 Minimalist white/light theme with a rounded square avatar.
 
 ```typescript
-new WelCard({
+new Welcomize({
     username: 'User',
     avatarUrl: '...',
     theme: 'clean',
@@ -87,7 +87,7 @@ new WelCard({
 
 ## ⚙️ API Reference
 
-### `WelCardOptions`
+### `WelcomizeOptions`
 
 | Option | Type | Default | Description |
 | :--- | :--- | :--- | :--- |
@@ -104,7 +104,7 @@ new WelCard({
 
 ```bash
 # Clone the repo
-git clone https://github.com/sploov/welcard.git
+git clone https://github.com/sploov/welcomize.git
 
 # Install dependencies
 npm install

@@ -1,8 +1,8 @@
-# Contributing to WelCard
+# Contributing to Welcomize
 
 First off, thanks for taking the time to contribute! 🎉
 
-The following is a set of guidelines for contributing to WelCard. These are mostly guidelines, not rules. Use your best judgment, and feel free to propose changes to this document in a pull request.
+The following is a set of guidelines for contributing to Welcomize. These are mostly guidelines, not rules. Use your best judgment, and feel free to propose changes to this document in a pull request.
 
 ## Code of Conduct
 
@@ -13,8 +13,8 @@ This project and everyone participating in it is governed by the [Code of Conduc
 1.  **Fork the repository** on GitHub.
 2.  **Clone your fork** locally:
     ```bash
-    git clone https://github.com/your-username/welcard.git
-    cd welcard
+    git clone https://github.com/your-username/welcomize.git
+    cd welcomize
     ```
 3.  **Install dependencies**:
     ```bash
@@ -55,8 +55,8 @@ Example: `feat: add new futuristic theme`
     ```bash
     git push origin feature/amazing-feature
     ```
-2.  Open a **Pull Request** on the main `welcard` repository.
-3.  Fill out the **Pull Request Template** completely.
+2.  Open a **Pull Request** on the main `welcomize` repository.
+3.  Fill out the **Pull Request** Template completely.
 4.  Wait for review! We try to review PRs as quickly as possible.
 
 ## Coding Standards

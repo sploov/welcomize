@@ -1,6 +1,6 @@
 export type Theme = 'classic' | 'modern' | 'clean';
 
-export interface WelCardOptions {
+export interface WelcomizeOptions {
     username: string;
     avatarUrl: string;
     theme?: Theme;

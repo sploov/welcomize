@@ -1,4 +1,4 @@
-import { WelCard } from '../src';
+import { Welcomize } from '../src';
 import * as fs from 'fs';
 import * as path from 'path';
 
@@ -11,7 +11,7 @@ const avatarUrl = 'https://avatars.githubusercontent.com/u/1?v=4'; // GitHub Oct
 
 async function run() {
     console.log('Generating Classic Card...');
-    const card1 = new WelCard({
+    const card1 = new Welcomize({
         username: 'SploovDev',
         avatarUrl,
         theme: 'classic',
@@ -21,7 +21,7 @@ async function run() {
     fs.writeFileSync(path.join(outDir, 'classic.png'), buf1);
 
     console.log('Generating Modern Card...');
-    const card2 = new WelCard({
+    const card2 = new Welcomize({
         username: 'SploovDev',
         avatarUrl,
         theme: 'modern',
@@ -31,7 +31,7 @@ async function run() {
     fs.writeFileSync(path.join(outDir, 'modern.png'), buf2);
 
     console.log('Generating Clean Card...');
-    const card3 = new WelCard({
+    const card3 = new Welcomize({
         username: 'SploovDev',
         avatarUrl,
         theme: 'clean',

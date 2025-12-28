@@ -12,7 +12,7 @@ A clear and concise description of what the bug is.
 
 **To Reproduce**
 Steps to reproduce the behavior:
-1. Initialize WelCard with options '...'
+1. Initialize Welcomize with options '...'
 2. Call render()
 3. See error
 

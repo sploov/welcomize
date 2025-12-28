@@ -1,13 +1,13 @@
 import { createCanvas, loadImage, GlobalFonts, SKRSContext2D } from '@napi-rs/canvas';
-import { WelCardOptions } from './types';
+import { WelcomizeOptions } from './types';
 import { drawCircularImage, drawRoundedImage } from './utils';
 
-export class WelCard {
-    private options: WelCardOptions;
+export class Welcomize {
+    private options: WelcomizeOptions;
     private width: number = 800;
     private height: number = 300;
 
-    constructor(options: WelCardOptions) {
+    constructor(options: WelcomizeOptions) {
         this.options = {
             theme: 'classic',
             title: 'Welcome',
