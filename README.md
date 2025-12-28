@@ -28,7 +28,7 @@
 ## ✨ Features
 
 - **🚀 High Performance:** Powered by `@napi-rs/canvas` for blazing fast image generation.
-- **🎨 Pre-built Themes:** Comes with `Classic`, `Modern`, and `Clean` themes out of the box.
+- **🎨 Pre-built Themes:** Comes with **8** themes including `Cyberpunk`, `Nature`, `Gaming`, and more.
 - **🛠 Fully Customizable:** Control colors, fonts, backgrounds, and layouts.
 - **📘 TypeScript:** Written in TypeScript with full type definitions included.
 - **📦 Lightweight:** Zero heavy dependencies (uses pre-compiled binaries).
@@ -82,31 +82,39 @@ channel.send({ files: [attachment] });
 
 ## 🎨 Themes
 
-Welcomize comes with beautiful built-in themes.
+Welcomize comes with **8 beautiful built-in themes**.
 
 ### 🔹 Modern
 A sleek, gradient-based design with a glowing avatar.
 <img src="./assets/modern.png" width="100%" style="border-radius: 10px; margin-bottom: 20px;" alt="Modern Theme" />
 
-```typescript
-new Welcomize({ theme: 'modern', borderColor: '#00FFFF', ... });
-```
+### 🔹 Cyberpunk
+Neon lights, glitches, and a dark futuristic aesthetic.
+<img src="./assets/cyberpunk.png" width="100%" style="border-radius: 10px; margin-bottom: 20px;" alt="Cyberpunk Theme" />
+
+### 🔹 Nature
+Calm greens, organic shapes, and a peaceful vibe.
+<img src="./assets/nature.png" width="100%" style="border-radius: 10px; margin-bottom: 20px;" alt="Nature Theme" />
+
+### 🔹 Gaming
+High contrast, angular shapes, and a competitive feel.
+<img src="./assets/gaming.png" width="100%" style="border-radius: 10px; margin-bottom: 20px;" alt="Gaming Theme" />
+
+### 🔹 Retro
+Synthwave aesthetics with suns, grids, and gradients.
+<img src="./assets/retro.png" width="100%" style="border-radius: 10px; margin-bottom: 20px;" alt="Retro Theme" />
+
+### 🔹 Bubble
+Soft pastel colors and rounded shapes for a friendly welcome.
+<img src="./assets/bubble.png" width="100%" style="border-radius: 10px; margin-bottom: 20px;" alt="Bubble Theme" />
 
 ### 🔹 Clean
 Minimalist, bright, and professional.
 <img src="./assets/clean.png" width="100%" style="border-radius: 10px; margin-bottom: 20px;" alt="Clean Theme" />
 
-```typescript
-new Welcomize({ theme: 'clean', borderColor: '#FF5733', ... });
-```
-
 ### 🔹 Classic
 The timeless solid-color Discord style.
 <img src="./assets/classic.png" width="100%" style="border-radius: 10px; margin-bottom: 20px;" alt="Classic Theme" />
-
-```typescript
-new Welcomize({ theme: 'classic', backgroundColor: '#23272A', ... });
-```
 
 ---
 
@@ -118,7 +126,7 @@ new Welcomize({ theme: 'classic', backgroundColor: '#23272A', ... });
 | :--- | :--- | :--- | :--- |
 | `username` | `string` | **Required** | The username to display. |
 | `avatarUrl` | `string` | **Required** | The user's avatar URL (png/jpg). |
-| `theme` | `Theme` | `'classic'` | `'classic'`, `'modern'`, or `'clean'`. |
+| `theme` | `Theme` | `'classic'` | `'classic'`, `'modern'`, `'clean'`, `'cyberpunk'`, `'nature'`, `'gaming'`, `'retro'`, `'bubble'`. |
 | `title` | `string` | `'Welcome'` | Main heading text. |
 | `subtitle` | `string` | `'To the server!'` | Subtitle/message text. |
 | `backgroundColor` | `string` | *Theme Default* | Hex color background. |

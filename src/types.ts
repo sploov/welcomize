@@ -1,4 +1,4 @@
-export type Theme = 'classic' | 'modern' | 'clean';
+export type Theme = 'classic' | 'modern' | 'clean' | 'cyberpunk' | 'nature' | 'gaming' | 'retro' | 'bubble';
 
 export interface WelcomizeOptions {
     username: string;
